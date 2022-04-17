@@ -3,6 +3,8 @@ package controllers
 import javax.inject._
 import play.api._
 import play.api.mvc._
+import slick.driver.PostgresDriver.api._
+// import slick.jdbc.JdbcBackend._
 
 @Singleton
 class GreetController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {

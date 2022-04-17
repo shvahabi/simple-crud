@@ -4,11 +4,9 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 import slick.jdbc.PostgresProfile.api._
-// import slick.jdbc.JdbcBackend._
 
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
-//import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
 @Singleton
@@ -19,21 +17,22 @@ class GreetController @Inject()(val controllerComponents: ControllerComponents) 
 
   def dbGreet() = Action { implicit request: Request[AnyContent] => {
     val db = Database.forConfig("db")
-    val query = sql"SELECT 'Database is configured properly ...'".as[(String)]
-    val result: Either[Exception, String] = {
-      Try {
-        Await.result(db.run(query), 10.second).toList.head
-      } match {
-        case Success(value: String) => Right(value)
-        case Failure(e: Exception) => Left(e)
-      }
+    val query: Future[Vector[String]] = db.run {
+      sql"SELECT 'Database is configured properly ...'".as[(String)]
+    }
+    val timeout: Duration = 2.second
+    val result: Either[Exception, String] = Try {
+      Await.result(query, timeout)
+    } match {
+      case Success(s: Vector[String]) => Right(s.toList.head)
+      case Failure(e: Exception) => Left(e)
     }
     result match {
-      case Right(value: String) =>
-        Ok(views.html.greet(value))
-      case Left(exception) =>
-        exception.printStackTrace()
-        new Status(424)("Strange error")
+      case Right(s: String) => Ok(views.html.greet(s))
+      case Left(t: Exception) => {
+        t.printStackTrace()
+        new Status(424)(views.html.greet("Unknown problem with database configuration ..."))
+      }
     }
   }
   }

@@ -31,7 +31,7 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
         case Right(r: Vector[(Int, String, Int)]) => OK(view.apply(r))
         case Left(e: Exception) => {
           e.printStackTrace()
-          new Status(503)(views.html.userMessage("Service unavailable, please try again in a while ..."))
+          new Status(503)(views.html.userPrompt("Service unavailable, please try again in a while ..."))
         }
       }
     }

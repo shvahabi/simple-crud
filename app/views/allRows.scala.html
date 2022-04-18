@@ -1,4 +1,4 @@
-@(data: Vector[(Int, String, Int)], heading: (String, String, String))
+@(data: Vector[(Any, Any, Any)], heading: (String, String, String))
 
 @main("Welcome to Play") {
 <table class="table table-striped" dir="rtl">
@@ -12,7 +12,7 @@
     <tbody>
     @for(row <- data) {
     <tr>
-        <th scope="row">@row._1</th>
+        <th style="font-weight:normal">@row._1</th>
         <td>@row._2</td>
         <td>@row._3</td>
     </tr>

@@ -42,6 +42,17 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
     tableName match {
       case "movies" => queryToResult[(Int, String, Int)]("SELECT id, title, year FROM movies", ("ردیف", "عنوان", "سال تولید"))
       case "actors" => queryToResult[(Int, String, Int)]("SELECT id, name, birthday FROM actors", ("ردیف", "نام", "سال تولد"))
+      case "plays" => queryToResult[(String, String, String)](
+        s"""
+           |SELECT actors.name, plays.role, movies.title
+           |FROM actors
+           |INNER JOIN plays on actors.id = plays.actor
+           |INNER JOIN movies on movies.id = plays.movie
+           |WHERE actors.birthday > 1971
+           |ORDER BY actors.name ASC;
+           |""".stripMargin,
+        ("بازیگر", "نقش", "فیلم")
+      )
       case _ => NotFound(views.html.notFound())
     }
   }

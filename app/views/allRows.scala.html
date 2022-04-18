@@ -1,12 +1,12 @@
-@(data: Vector[(Int, String, Int)])
+@(data: Vector[(Int, String, Int)], heading: (String, String, String))
 
 @main("Welcome to Play") {
 <table class="table table-striped" dir="rtl">
     <thead>
     <tr>
-        <th scope="col">ردیف</th>
-        <th scope="col">نام</th>
-        <th scope="col">سال تولد</th>
+        <th scope="col">@heading._1</th>
+        <th scope="col">@heading._2</th>
+        <th scope="col">@heading._3</th>
     </tr>
     </thead>
     <tbody>

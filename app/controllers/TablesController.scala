@@ -26,7 +26,7 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
       }
     }
 
-    def queryToReport[T](queryString: String, header: (String, String, String)): Result = {
+    def queryToResult[T](queryString: String, header: (String, String, String)): Result = {
       query(queryString) match {
         case Right(r: Vector[(Int, String, Int)]) => Ok(views.html.allRows(r, header))
         case Left(e: Exception) => {
@@ -37,13 +37,10 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
     }
 
     tableName match {
-      case "movies" => queryToReport("SELECT id, title, year FROM movies", ("ردیف", "عنوان", "سال تولید"))
-      case "actors" => queryToReport("SELECT id, name, birthday FROM actors", ("ردیف", "نام", "سال تولد"))
+      case "movies" => queryToResult("SELECT id, title, year FROM movies", ("ردیف", "عنوان", "سال تولید"))
+      case "actors" => queryToResult("SELECT id, name, birthday FROM actors", ("ردیف", "نام", "سال تولد"))
       case _ => NotFound(views.html.notFound())
     }
   }
   }
-//def all(name: String) = Action { implicit request: Request[AnyContent] =>
-//  Ok(views.html.allActors(Vector((1, "شاهد", 3))))
-//}
 }

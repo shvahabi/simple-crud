@@ -13,18 +13,14 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
     import scala.concurrent.ExecutionContext.Implicits.global
     val db = Database.forConfig("db")
 
-    case class Movies(id: Int, title: String, year: Int)
-    case class Actors(id: Int, name: String, birthday: Int)
-    case class Plays(name: String, role: String, title: String)
-
-    def queryToResult(implicit getResult: GetResult[Movies]): Future[Result] = {
-      val result: Future[Vector[Movies]] = db.run {
-        sql"SELECT * FROM movies".as[Movies]
+    def queryReport[T <: Product](queryString: String, heading: List[String])(implicit getResult: GetResult[T]): Future[Result] = {
+      val queryResult: Future[Vector[T]] = db.run {
+        sql"#${queryString}".as[T]
       } andThen {
         case _ => db.close()
       }
-      result.failed match {
-        case _: Future[NoSuchElementException] => result map { x => Ok(views.html.allRows(x.map(y => y.productIterator.toList), List("ردیف", "عنوان", "سال تولید"))) }
+      queryResult.failed match {
+        case _: Future[NoSuchElementException] => queryResult map { x => Ok(views.html.allRows(x.map(y => y.productIterator.toList), heading)) }
         case t: Future[Throwable] => {
           t foreach { e => e.printStackTrace() }
         }
@@ -36,22 +32,29 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
 
     tableName match {
       case "movies" => {
-        implicit val getResult = GetResult[Movies](r => Movies(r.nextInt, r.nextString, r.nextInt))
-        queryToResult(getResult)
+        case class Movies(id: Int, title: String, year: Int)
+        implicit val getMovies = GetResult[Movies](r => Movies(r.nextInt, r.nextString, r.nextInt))
+        queryReport[Movies]("SELECT id, title, year FROM movies", List("ردیف", "عنوان", "سال تولید"))(getMovies)
       }
-
-//      case "actors" => queryToResult("SELECT id, name, birthday FROM actors", List("ردیف", "نام", "سال تولد"))(implicit val getResult = GetResult[Actors](r => Actors(r.nextInt, r.nextString, r.nextInt)))
-//      case "plays" => queryToResult[Plays](
-//        s"""
-//           |SELECT actors.name, plays.role, movies.title
-//           |FROM actors
-//           |INNER JOIN plays on actors.id = plays.actor
-//           |INNER JOIN movies on movies.id = plays.movie
-//           |WHERE actors.birthday > 1971
-//           |ORDER BY actors.name ASC;
-//           |""".stripMargin,
-//        List("بازیگر", "نقش", "فیلم")
-//      )(implicit val getResult = GetResult(r => Actors(r.nextInt, r.nextString, r.nextInt)))
+      case "actors" => {
+        case class Actors(id: Int, name: String, birthday: Int)
+        implicit val getActors = GetResult[Actors](r => Actors(r.nextInt, r.nextString, r.nextInt))
+        queryReport[Actors]("SELECT id, name, birthday FROM actors", List("ردیف", "نام", "سال تولد"))(getActors)
+      }
+      case "plays" => {
+        case class Plays(name: String, role: String, title: String)
+        implicit val getPlays = GetResult[Plays](r => Plays(r.nextString, r.nextString, r.nextString))
+        queryReport[Plays](
+          s"""
+             |SELECT actors.name, plays.role, movies.title
+             |FROM actors
+             |INNER JOIN plays on actors.id = plays.actor
+             |INNER JOIN movies on movies.id = plays.movie
+             |WHERE actors.birthday > 1971
+             |ORDER BY actors.name ASC;
+             |""".stripMargin,
+          List("بازیگر", "نقش", "فیلم"))
+      }
       case _ => Future { NotFound(views.html.notFound()) }
     }
   }

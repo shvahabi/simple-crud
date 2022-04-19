@@ -34,16 +34,24 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
       case "movies" => {
         case class Movies(id: Int, title: String, year: Int)
         implicit val getMovies = GetResult[Movies](r => Movies(r.nextInt, r.nextString, r.nextInt))
-        queryReport[Movies]("SELECT id, title, year FROM movies", List("ردیف", "عنوان", "سال تولید"))(getMovies)
+        queryReport[Movies](
+          s"""
+             |SELECT id, title, year FROM movies
+             |""".stripMargin,
+          List("ردیف", "عنوان", "سال تولید"))
       }
       case "actors" => {
         case class Actors(id: Int, name: String, birthday: Int)
         implicit val getActors = GetResult[Actors](r => Actors(r.nextInt, r.nextString, r.nextInt))
-        queryReport[Actors]("SELECT id, name, birthday FROM actors", List("ردیف", "نام", "سال تولد"))(getActors)
+        queryReport[Actors](
+          s"""
+             |SELECT id, name, birthday FROM actors
+             |""".stripMargin,
+          List("ردیف", "نام", "سال تولد"))
       }
       case "plays" => {
         case class Plays(name: String, role: String, title: String)
-        implicit val getPlays = GetResult[Plays](r => Plays(r.<<, r.<<, r.<<))
+        implicit val getPlays = GetResult[Plays](r => Plays(r.nextString, r.nextString, r.nextString))
         queryReport[Plays](
           s"""
              |SELECT actors.name, plays.role, movies.title

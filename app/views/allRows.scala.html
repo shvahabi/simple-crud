@@ -1,20 +1,20 @@
-@(data: Vector[(Any, Any, Any)], heading: (String, String, String))
+@(data: Vector[List[Any]], heading: List[String])
 
 @main("Welcome to Play") {
 <table class="table table-striped" dir="rtl">
     <thead>
     <tr>
-        <th scope="col">@heading._1</th>
-        <th scope="col">@heading._2</th>
-        <th scope="col">@heading._3</th>
+        @for(h <- heading) {
+        <th scope="col">@h</th>
+        }
     </tr>
     </thead>
     <tbody>
     @for(row <- data) {
     <tr>
-        <th style="font-weight:normal">@row._1</th>
-        <td>@row._2</td>
-        <td>@row._3</td>
+        @for(r <- row) {
+        <th style="font-weight:normal">@r</th>
+        }
     </tr>
     }
     </tbody>

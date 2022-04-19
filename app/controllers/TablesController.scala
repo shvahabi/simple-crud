@@ -13,18 +13,19 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
     import scala.concurrent.ExecutionContext.Implicits.global
     val db = Database.forConfig("db")
 
-    def query[T](queryString: String)(implicit getResult: GetResult[T]): Future[Vector[T]] = {
+    def query(queryString: String): Future[Vector[(String, String, String)]] = {
+//      implicit val getResult: GetResult[List[String]] = GetResult(x => x.nextString()::x.nextString()::x.nextString()::Nil)
       db.run {
-        sql"#${queryString}".as[T]
+        sql"#${queryString}".as[(String, String, String)]
       } andThen {
         case _ => db.close()
       }
     }
 
-    def queryToResult[T](queryString: String, header: List[String])(implicit getResult: GetResult[T]): Future[Result] = {
-      val result: Future[Vector[T]] = query[T](queryString)
+    def queryToResult(queryString: String, header: List[String]): Future[Result] = {
+      val result: Future[Vector[(String, String, String)]] = query(queryString)
       result.failed match {
-        case _: Future[NoSuchElementException] => result map { x => Ok(views.html.allRows(x.asInstanceOf[Vector[List[String]]], header)) }
+        case _: Future[NoSuchElementException] => result map { x => Ok(views.html.allRows(x.map(y => y._1::y._2::y._3::Nil), header)) }
         case t: Future[Throwable] => {
           t foreach { e => e.printStackTrace() }
         }
@@ -33,9 +34,9 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
     }
 
     tableName match {
-      case "movies" => queryToResult[(Int, String, Int)]("SELECT id, title, year FROM movies", List("ردیف", "عنوان", "سال تولید"))
-      case "actors" => queryToResult[(Int, String, Int)]("SELECT id, name, birthday FROM actors", List("ردیف", "نام", "سال تولد"))
-      case "plays" => queryToResult[(String, String, String)](
+      case "movies" => queryToResult("SELECT id, title, year FROM movies", List("ردیف", "عنوان", "سال تولید"))
+      case "actors" => queryToResult("SELECT id, name, birthday FROM actors", List("ردیف", "نام", "سال تولد"))
+      case "plays" => queryToResult(
         s"""
            |SELECT actors.name, plays.role, movies.title
            |FROM actors

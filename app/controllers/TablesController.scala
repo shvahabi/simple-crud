@@ -43,7 +43,7 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
       }
       case "plays" => {
         case class Plays(name: String, role: String, title: String)
-        implicit val getPlays = GetResult[Plays](r => Plays(r.nextString, r.nextString, r.nextString))
+        implicit val getPlays = GetResult[Plays](r => Plays(r.<<, r.<<, r.<<))
         queryReport[Plays](
           s"""
              |SELECT actors.name, plays.role, movies.title

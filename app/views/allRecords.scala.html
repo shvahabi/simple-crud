@@ -1,4 +1,4 @@
-@(fields: List[(String, String, String)])
+@(fields: List[(String, String, String)], actionTarget: String)
 @fieldRepresentation(label: String, name: String, typeLabel: String) = {
 <div class="mb-3">
     <label for="@label" class="form-label">@label</label>
@@ -9,7 +9,7 @@
 <div class="container">
     <div class="column"></div>
     <div class="column">
-        <form dir="rtl" action="/db/new/movie" method="post">
+        <form dir="rtl" action="/db/@{actionTarget}" method="post">
             @for(field <- fields) {
             @fieldRepresentation(field._1, field._2, field._3)
             }

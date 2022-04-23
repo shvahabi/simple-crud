@@ -1,7 +1,12 @@
-@(data: Vector[List[Any]], heading: List[String])
+@(data: Vector[List[Any]], heading: List[String], newRedirectionTarget: String)
 
 @main("Welcome to Play") {
-<table class="table table-striped" dir="rtl">
+<div dir="rtl">
+    <div>
+        <button onclick="@{s"location.href = 'http://127.0.0.1:9000/db/new/$newRedirectionTarget'"}">new @newRedirectionTarget</button>
+    </div>
+    <div>
+<table class="table table-striped">
     <thead>
     <tr>
         @for(h <- heading) {
@@ -19,4 +24,6 @@
     }
     </tbody>
 </table>
+    </div>
+</div>
 }

@@ -13,14 +13,14 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
     import scala.concurrent.ExecutionContext.Implicits.global
     val db = Database.forConfig("db")
 
-    def queryReport[T <: Product](queryString: String, heading: List[String])(implicit getResult: GetResult[T]): Future[Result] = {
+    def queryReport[T <: Product](queryString: String, heading: List[String], name: String)(implicit getResult: GetResult[T]): Future[Result] = {
       val queryResult: Future[Vector[T]] = db.run {
         sql"#${queryString}".as[T]
       } andThen {
         case _ => db.close()
       }
       queryResult.failed match {
-        case _: Future[NoSuchElementException] => queryResult map { x => Ok(views.html.allRows(x.map(y => y.productIterator.toList), heading)) }
+        case _: Future[NoSuchElementException] => queryResult map { x => Ok(views.html.allRows(x.map(y => y.productIterator.toList), heading, name)) }
         case t: Future[Throwable] => {
           t foreach { e => e.printStackTrace() }
         }
@@ -38,7 +38,8 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
           s"""
              |SELECT id, title, year FROM movies
              |""".stripMargin,
-          List("ردیف", "عنوان", "سال تولید"))
+          List("ردیف", "عنوان", "سال تولید"),
+          "movie")
       }
       case "actors" => {
         case class Actors(id: Int, name: String, birthday: Int)
@@ -47,7 +48,8 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
           s"""
              |SELECT id, name, birthday FROM actors
              |""".stripMargin,
-          List("ردیف", "نام", "سال تولد"))
+          List("ردیف", "نام", "سال تولد"),
+          "actor")
       }
       case "plays" => {
         case class Plays(name: String, role: String, title: String)
@@ -61,9 +63,12 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
              |WHERE actors.birthday > 1971
              |ORDER BY actors.name ASC;
              |""".stripMargin,
-          List("بازیگر", "نقش", "فیلم"))
+          List("بازیگر", "نقش", "فیلم"),
+          "")
       }
-      case _ => Future { NotFound(views.html.notFound()) }
+      case _ => Future {
+        NotFound(views.html.notFound())
+      }
     }
   }
   }

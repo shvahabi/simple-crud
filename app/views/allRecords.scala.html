@@ -1,0 +1,15 @@
+@(fields: List[(String, String, String)])
+@fieldRepresentation(label: String, name: String, typeLabel: String) = {
+<div class="mb-3">
+    <label for="@label" class="form-label">@label</label>
+    <input id="@label" name="@name" type="@typeLabel" class="form-control"></input>
+</div>
+}
+@main("Welcome to Play") {
+<form dir="rtl" action="/db/new/movie" method="post">
+    @for(field <- fields) {
+    @fieldRepresentation(field._1, field._2, field._3)
+    }
+    <button type="submit" class="btn btn-primary">افزودن</button>
+</form>
+}

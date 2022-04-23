@@ -7,6 +7,7 @@
 GET     /                           controllers.HomeController.index()
 GET     /greet                      controllers.GreetController.greet(name: Option[String])
 GET     /greet/db                   controllers.GreetController.dbGreet()
+GET     /db/new/:tableName          controllers.RecordsController.all(tableName: String)
 GET     /db/:tableName              controllers.TablesController.all(tableName: String)
 
 # Map static resources from the /public folder to the /assets URL path

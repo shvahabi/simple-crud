@@ -9,11 +9,11 @@
 <div class="container">
     <div class="column"></div>
     <div class="column">
-        <form dir="rtl" action="/db/@{actionTarget}" method="post">
+        <form dir="rtl" target="_self">
             @for(field <- fields) {
             @fieldRepresentation(field._1, field._2, field._3)
             }
-            <button type="submit" class="btn btn-primary">افزودن</button>
+            <button type="submit" class="btn btn-primary" onclick="submitFormData(event, '/db/@{actionTarget}');">افزودن</button>
         </form>
     </div>
     <div class="column"></div>

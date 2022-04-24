@@ -43,12 +43,12 @@ class RecordsController @Inject()(val controllerComponents: ControllerComponents
 
     tableName match {
       case "movie" => {
-//        println(request.body)
+        println(request.body.asJson.get)
         val movie: Movie = Json.fromJson[Movie](request.body.asJson.get).get
         insertInto(
           s"""
              |INSERT INTO movies (title, year)
-             |VALUES ('${movie.title}', '${movie.year}');
+             |VALUES ('${movie.title}', '${movie.year.toInt}');
              |""".stripMargin)
       }
       case "actor" => {
@@ -57,7 +57,7 @@ class RecordsController @Inject()(val controllerComponents: ControllerComponents
         insertInto(
           s"""
              |INSERT INTO actors (name, birthday)
-             |VALUES ('${actor.name}', '${actor.birthday}');
+             |VALUES ('${actor.name}', '${actor.birthday.toInt}');
              |""".stripMargin)
       }
       case _ => Future {

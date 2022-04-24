@@ -38,7 +38,7 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
           s"""
              |SELECT id, title, year FROM movies
              |""".stripMargin,
-          List("ردیف", "عنوان", "سال تولید"),
+          List("ردیف", "عنوان", "سال تولید", "عملیات"),
           "movie")
       }
       case "actors" => {
@@ -48,7 +48,7 @@ class TablesController @Inject()(val controllerComponents: ControllerComponents)
           s"""
              |SELECT id, name, birthday FROM actors
              |""".stripMargin,
-          List("ردیف", "نام", "سال تولد"),
+          List("ردیف", "نام", "سال تولد", "عملیات"),
           "actor")
       }
       case "plays" => {

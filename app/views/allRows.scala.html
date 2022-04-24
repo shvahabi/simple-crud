@@ -6,18 +6,8 @@
     <div dir="rtl" class="mb-3 column">
         <div class="btn-group" role="group">
             <div>
-                <button type="button" class="btn btn-danger" onclick="@{s"location.href='http://127.0.0.1:9000/db/delete/$newRedirectionTarget'"}">
-                حذف
-                </button>
-            </div>
-            <div>
                 <button type="button" class="btn btn-success" onclick="@{s"location.href='http://127.0.0.1:9000/db/new/$newRedirectionTarget'"}">
                 جدید
-                </button>
-            </div>
-            <div>
-                <button type="button" class="btn btn-primary" onclick="@{s"location.href='http://127.0.0.1:9000/db/edit/$newRedirectionTarget'"}">
-                ویرایش
                 </button>
             </div>
         </div>
@@ -34,8 +24,22 @@
                 @for(row <- data) {
                 <tr>
                     @for(r <- row) {
-                    <th style="font-weight:normal">@r</th>
+                    <td style="font-weight:normal">@r</td>
                     }
+                    <td>
+                    <div class="btn-group" role="group">
+                        <div>
+                            <button type="button" class="btn btn-danger" onclick="@{s"location.href='http://127.0.0.1:9000/db/delete/$newRedirectionTarget'"}">
+                            حذف
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" onclick="@{s"location.href='http://127.0.0.1:9000/db/edit/$newRedirectionTarget'"}">
+                            ویرایش
+                            </button>
+                        </div>
+                    </div>
+                    </td>
                 </tr>
                 }
                 </tbody>

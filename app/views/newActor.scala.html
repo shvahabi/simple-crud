@@ -1,0 +1,17 @@
+@import helper._
+@import play.mvc.Http.Request
+@import models.forms.Actor
+
+@(newActorForm: Form[Actor], postUrl: Call)(implicit request: MessagesRequestHeader)
+
+@main("افزودن بازیگر جدید") {
+<div dir="rtl">
+<h3>فرم ورود اطلاعات بازیگر جدید</h3>
+    @helper.form(postUrl) {
+    @helper.CSRF.formField
+    @helper.inputText(newActorForm("نام"))
+    @helper.inputText(newActorForm("سال تولد"))
+    <button type="button" class="btn btn-success btn-sm">افزودن</button>
+    }
+</div>
+}

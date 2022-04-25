@@ -33,4 +33,13 @@ package object controllers {
     }
   }
 
+  def insert[T <: Product](queryString: String)(implicit getResult: GetResult[T], db: PostgresProfile.backend.Database): Future[Int] = {
+    val queryResult: Future[Int] = db.run {
+      sqlu"#${queryString}"
+    } andThen {
+      case _ => db.close()
+    }
+    queryResult
+  }
+
 }

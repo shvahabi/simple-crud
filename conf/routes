@@ -9,6 +9,7 @@ GET     /greet                      controllers.GreetController.greet(name: Opti
 GET     /greet/db                   controllers.GreetController.dbGreet()
 GET     /db/:tableName              controllers.TablesController.all(tableName: String)
 GET     /actors                     controllers.ActorReportController.allActors()
+GET     /actors/new                 controllers.ActorFormController.newActor()
 GET     /actors/:actorId            controllers.ActorReportController.singleActor(actorId: String)
 # POST    /actors                     controllers.ActorFormController.newActor()
 # PUT     /actors/:actorId            controllers.ActorFormController.editActor(actorId: String)

@@ -8,7 +8,7 @@ import models.Actor
 @Singleton
 class ActorReportController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
 
-  def all() = Action.async { implicit request: Request[AnyContent] => {
+  def allActors() = Action.async { implicit request: Request[AnyContent] => {
     implicit val db = Database.forConfig("db")
     report[Actor](
       query[Actor](
@@ -21,7 +21,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
   }
   }
 
-  def single(actorId: String) = Action.async { implicit request: Request[AnyContent] => {
+  def singleActor(actorId: String) = Action.async { implicit request: Request[AnyContent] => {
     implicit val db = Database.forConfig("db")
     report[Actor](
       query[Actor](

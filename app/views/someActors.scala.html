@@ -1,0 +1,24 @@
+@import models.Actor
+
+@(data: Vector[Actor])
+
+@main("Actors Query Result") {
+<table class="table table-striped" dir="rtl">
+    <thead>
+    <tr>
+        <th scope="col">ردیف</th>
+        <th scope="col">نام</th>
+        <th scope="col">سال تولد</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(row <- data) {
+    <tr>
+        <td style="font-weight:normal">@row.id</td>
+        <td style="font-weight:normal">@row.name</td>
+        <td style="font-weight:normal">@row.birthday</td>
+    </tr>
+    }
+    </tbody>
+</table>
+}

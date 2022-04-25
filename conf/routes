@@ -8,6 +8,13 @@ GET     /                           controllers.HomeController.index()
 GET     /greet                      controllers.GreetController.greet(name: Option[String])
 GET     /greet/db                   controllers.GreetController.dbGreet()
 GET     /db/:tableName              controllers.TablesController.all(tableName: String)
+GET     /actors                     controllers.ActorReportController.all()
+# POST    /actors                     controllers.ActorFormController.newActor(actorId: String)
+GET     /actors/:actorId            controllers.ActorReportController.single(actorId: String)
+# PUT     /actors/:actorId            controllers.ActorFormController.editActor(actorId: String)
+# DELETE  /actors/:actorId            controllers.ActorReportController.delete(actorId: String)
+
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

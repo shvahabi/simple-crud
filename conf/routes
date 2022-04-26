@@ -9,10 +9,11 @@ GET     /greet                      controllers.GreetController.greet(name: Opti
 GET     /greet/db                   controllers.GreetController.dbGreet()
 GET     /db/:tableName              controllers.TablesController.all(tableName: String)
 GET     /actors                     controllers.ActorReportController.allActors()
-GET     /actors/new                 controllers.ActorFormController.newActor()
+GET     /actors/new                 controllers.ActorFormController.actorForm()
 GET     /actors/:actorId            controllers.ActorReportController.singleActor(actorId: String)
-# POST    /actors                     controllers.ActorFormController.newActor()
-# PUT     /actors/:actorId            controllers.ActorFormController.editActor(actorId: String)
+POST    /actors                     controllers.ActorFormController.newActor()
+GET     /actors/edit/:actorId       controllers.ActorFormController.editActor(actorId: String)
+POST    /actors/edit/:actorId       controllers.ActorFormController.editActor(actorId: String)
 # DELETE  /actors/:actorId            controllers.ActorReportController.deleteActor(actorId: String)
 
 # Map static resources from the /public folder to the /assets URL path

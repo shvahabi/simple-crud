@@ -14,7 +14,9 @@
                     <th scope="col" style="text-align: right">نام</th>
                     <th scope="col">سال تولد</th>
                     <th scope="col">
-                        <button type="button" class="btn btn-success btn-sm">جدید</button>
+                        <a href="/actors/new">
+                            <button type="button" class="btn btn-success btn-sm" a="">جدید</button>
+                        </a>
                     </th>
                 </tr>
                 </thead>
@@ -25,8 +27,12 @@
                     <td style="text-align: right">@row.name</td>
                     <td>@row.birthday</td>
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm">ویرایش</button>
-                        <button type="button" class="btn btn-danger btn-sm">حذف</button>
+                        <a href="/actors/edit/@row.id">
+                            <button type="button" class="btn btn-primary btn-sm">ویرایش</button>
+                        </a>
+                        <a href="/actors/@row.id">
+                            <button type="button" class="btn btn-danger btn-sm">حذف</button>
+                        </a>
                     </td>
                 </tr>
                 }

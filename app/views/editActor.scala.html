@@ -1,4 +1,4 @@
-@(actorForm: Form[models.forms.Actor])(implicit request: MessagesRequestHeader)
+@(actorForm: Form[models.forms.Actor], actorId: String)(implicit request: MessagesRequestHeader)
 
 @main("افزودن بازیگر جدید") {
 @request.flash.data.map{ case (name, value) =>
@@ -14,7 +14,7 @@
 }
 <div dir="rtl">
 <h3>فرم ورود اطلاعات بازیگر جدید</h3>
-@helper.form(routes.ActorFormController.newActor) {
+@helper.form(routes.ActorFormController.editActor(actorId)) {
 @helper.CSRF.formField
 @helper.inputText(actorForm("name"), Symbol("_label") -> "نام")
 @helper.inputText(actorForm("birthday"), Symbol("_label") -> "سال تولد")

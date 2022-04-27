@@ -5,17 +5,16 @@ import play.api.mvc._
 import slick.jdbc.PostgresProfile.api._
 import models.Actor
 
-import scala.concurrent.Future
-
 @Singleton
 class ActorReportController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
 
-  def allActors() = Action.async { implicit request: Request[AnyContent] => {
+  def allActors(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] => {
     implicit val db = Database.forConfig("db")
     report[Actor](
       query[Actor](
         s"""
-           |SELECT * FROM actors;
+           |SELECT * FROM actors
+           |ORDER BY id;
            |""".stripMargin
       ),
       result => Ok(views.html.someActors(result))
@@ -23,7 +22,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
   }
   }
 
-  def singleActor(actorId: String) = Action.async { implicit request: Request[AnyContent] => {
+  def singleActor(actorId: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] => {
     implicit val db = Database.forConfig("db")
     report[Actor](
       query[Actor](
@@ -37,7 +36,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
   }
   }
 
-  def deleteActor(actorId: String) = Action.async { implicit request: Request[AnyContent] => {
+  def deleteActor(actorId: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] => {
     implicit val db = Database.forConfig("db")
 
     report[Int](
@@ -47,7 +46,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
            |WHERE id = ${actorId};
            |""".stripMargin
       ),
-      result => Redirect(routes.ActorReportController.allActors())
+      _ => Redirect(routes.ActorReportController.allActors())
     )
   }
   }

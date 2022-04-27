@@ -50,6 +50,6 @@ package object controllers {
     } andThen {
       case _ => db.close()
     }
-    queryResult map { resolvedValue => Vector(resolvedValue) }
+    queryResult map { value => Vector(value) }
   }
 }

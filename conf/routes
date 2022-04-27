@@ -14,7 +14,7 @@ POST    /actors/new                 controllers.ActorFormController.newActor()
 GET     /actors/:actorId            controllers.ActorReportController.singleActor(actorId: String)
 GET     /actors/edit/:actorId       controllers.ActorFormController.filledActorForm(actorId: String)
 POST    /actors/edit/:actorId       controllers.ActorFormController.editActor(actorId: String)
-POST    /actors/delete/:actorId     controllers.ActorReportController.deleteActor(actorId: String)
+GET     /actors/delete/:actorId     controllers.ActorReportController.deleteActor(actorId: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

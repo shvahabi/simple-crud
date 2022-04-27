@@ -28,11 +28,15 @@
                     <td>@row.birthday</td>
                     <td>
                         <a href="/actors/edit/@row.id">
-                            <button type="button" class="btn btn-primary btn-sm">ویرایش</button>
+                            <button type="button" class="btn btn-primary btn-sm">
+                                ویرایش
+                            </button>
                         </a>
-                        <button type="button" class="btn btn-danger btn-sm"
-                                onclick="routes.ActorReportController.deleteActor(@row.id)">حذف
-                        </button>
+                        <a href="/actors/delete/@row.id">
+                            <button type="button" class="btn btn-danger btn-sm">
+                                حذف
+                            </button>
+                        </a>
                     </td>
                 </tr>
                 }

@@ -5,6 +5,8 @@ import play.api.mvc._
 import slick.jdbc.PostgresProfile.api._
 import models.Actor
 
+import scala.concurrent.Future
+
 @Singleton
 class ActorReportController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
 
@@ -27,10 +29,25 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
       query[Actor](
         s"""
            |SELECT * FROM actors
-           WHERE id = ${actorId};
+           |WHERE id = ${actorId};
            |""".stripMargin
       ),
       result => Ok(views.html.someActors(result))
+    )
+  }
+  }
+
+  def deleteActor(actorId: String) = Action.async { implicit request: Request[AnyContent] => {
+    implicit val db = Database.forConfig("db")
+
+    report[Int](
+      delete(
+        s"""
+           |DELETE FROM actors
+           |WHERE id = ${actorId};
+           |""".stripMargin
+      ),
+      result => Redirect(routes.ActorReportController.allActors())
     )
   }
   }

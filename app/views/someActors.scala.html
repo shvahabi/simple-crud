@@ -15,7 +15,7 @@
                     <th scope="col">سال تولد</th>
                     <th scope="col">
                         <a href="/actors/new">
-                            <button type="button" class="btn btn-success btn-sm" a="">جدید</button>
+                            <button type="button" class="btn btn-success btn-sm">جدید</button>
                         </a>
                     </th>
                 </tr>
@@ -30,9 +30,9 @@
                         <a href="/actors/edit/@row.id">
                             <button type="button" class="btn btn-primary btn-sm">ویرایش</button>
                         </a>
-                        <a href="/actors/@row.id">
-                            <button type="button" class="btn btn-danger btn-sm">حذف</button>
-                        </a>
+                        <button type="button" class="btn btn-danger btn-sm"
+                                onclick="routes.ActorReportController.deleteActor(@row.id)">حذف
+                        </button>
                     </td>
                 </tr>
                 }

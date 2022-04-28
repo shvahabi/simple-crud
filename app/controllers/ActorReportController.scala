@@ -31,7 +31,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
            |WHERE id = ${actorId};
            |""".stripMargin
       ),
-      result => Ok(views.html.someActors(result))
+      result => Ok(views.html.singleActor(result.head))
     )
   }
   }

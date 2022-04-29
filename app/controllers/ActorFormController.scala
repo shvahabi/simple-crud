@@ -45,7 +45,7 @@ class ActorFormController @Inject()(messagesAction: MessagesActionBuilder, val c
       } andThen {
         case _ => db.close()
       } map {
-        case _: Int => Redirect(routes.ActorReportController.allActors()).flashing("info" -> "اطلاعات بازیگر جدید در سیستم ثبت گردید")
+        case _: Int => Redirect(routes.ActorReportController.allActors(Some(1))).flashing("info" -> "اطلاعات بازیگر جدید در سیستم ثبت گردید")
       } recover {
         t: Throwable => {
           t.printStackTrace()
@@ -106,7 +106,7 @@ class ActorFormController @Inject()(messagesAction: MessagesActionBuilder, val c
       } andThen {
         case _ => db.close()
       } map {
-        case _: Int => Redirect(routes.ActorReportController.allActors()).flashing("info" -> "تغییرات اطلاعات بازیگر ثبت گردید")
+        case _: Int => Redirect(routes.ActorReportController.allActors(Some(1))).flashing("info" -> "تغییرات اطلاعات بازیگر ثبت گردید")
       } recover {
         case t: Throwable => {
           t.printStackTrace()

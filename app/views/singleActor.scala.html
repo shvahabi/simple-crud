@@ -1,0 +1,41 @@
+@import models.Actor
+
+@(actor: Actor)
+
+@main("اطلاعات بازیگر") {
+<div class="container" dir="rtl">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="card text-center" style="width: 18rem;">
+                <img class="card-img-top" alt="@actor.name">
+                <div class="card-body">
+                    <h5 class="card-title" align="center">@actor.name</h5>
+                    <p class="card-text">
+                        @actor.name
+                        بازیگر مطرح ایرانی، زاده‌ی سال
+                        @actor.birthday
+                        می‌باشد.
+                    </p>
+                    <a href="/actors">
+                        <button type="button" class="btn btn-success btn-sm">
+                            فهرست
+                        </button>
+                    </a>
+                    <a href="/actors/edit/@actor.id">
+                        <button type="button" class="btn btn-primary btn-sm">
+                            ویرایش
+                        </button>
+                    </a>
+                    <a href="/actors/delete/@actor.id">
+                        <button type="button" class="btn btn-danger btn-sm">
+                            حذف
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+}

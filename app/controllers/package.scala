@@ -20,6 +20,15 @@ package object controllers {
     queryResult
   }
 
+  def count(queryString: String)(implicit db: PostgresProfile.backend.Database): Future[Int] = {
+    val queryResult: Future[Vector[Int]] = db.run {
+      sql"#${queryString}".as[Int]
+    } andThen {
+      case _ => db.close()
+    }
+    queryResult map { case unresolvedValue => unresolvedValue.head}
+  }
+
   def report[T](queryResult: Future[Vector[T]], result: Vector[T] => Result)(implicit db: PostgresProfile.backend.Database): Future[Result] = {
     queryResult.failed match {
       case _: Future[NoSuchElementException] => queryResult map { resolvedValue => result(resolvedValue) }

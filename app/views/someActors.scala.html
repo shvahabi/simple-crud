@@ -42,7 +42,7 @@
                         <tbody>
                         @for(number <- 1 to data.length) {
                         <tr style="font-weight:normal">
-                            <td>@{toPersian((number + (page - 1) * 5).toString)}</td>
+                            <td>@{toPersian((number + (if (page == 0) 0 else (page - 1)) * 5).toString)}</td>
                             <td style="text-align: right">@data(number - 1).name</td>
                             <td>@{toPersian((data(number - 1).birthday).toString)}</td>
                             <td>
@@ -66,6 +66,7 @@
                 <div class="row">
                     <nav class="d-flex justify-content-center" aria-label="Page navigation example">
                         <ul class="pagination d-flex flex-row-reverse">
+                            <li class="page-item"><a class="page-link" href="/actors?page=0">فهرست کامل</a></li>
                             @item(page, end, "1",
                             1, page == 1)
                             @if(page > 3) {
@@ -90,6 +91,16 @@
                             }
                             @item(page, end, end.toString,
                             end, page == end)
+                        </ul>
+                    </nav>
+                </div>
+                }
+                @if(end == 0) {
+                <div class="row">
+                    <nav class="d-flex justify-content-center" aria-label="Page navigation example">
+                        <ul class="pagination d-flex flex-row-reverse">
+                            <li class="page-item active"><a class="page-link" href="#">فهرست کامل</a></li>
+                            <li class="page-item"><a class="page-link" href="/actors?page=1">صفحه‌بندی</a></li>
                         </ul>
                     </nav>
                 </div>

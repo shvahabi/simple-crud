@@ -48,7 +48,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
         } map {
           unresolvedValue => {
             val (actors: Vector[Actor], actorsCount: Int) = unresolvedValue
-            Ok(views.html.someActors(actors, page.getOrElse(1), Math.ceil(actorsCount / 5f).toInt))
+            Ok(views.html.someActors(actors, page.getOrElse(1), Math.ceil(actorsCount / pageLimit.toFloat).toInt))
           }
         }
       }

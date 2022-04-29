@@ -1,11 +1,22 @@
 @import models.Actor
+@import utilities.toPersian
 
 @(data: Vector[Actor], page: Int, end: Int)
 
-@item(currentPage: Int, numberOfPages: Int, label: String, href: Int) = {
-<li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(href))">
+@item(currentPage: Int, numberOfPages: Int, label: String, href: Int, current: Boolean) = {
+@if(current) {
+<li class="page-item active"><a class="page-link" href="@routes.ActorReportController.allActors(Some(href))">
+    @if(label == "قبلی" || label == "بعدی") {
     @label
+    } else {@toPersian(label)}
 </a></li>
+} else {
+<li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(href))">
+    @if(label == "قبلی" || label == "بعدی") {
+    @label
+    } else {@toPersian(label)}
+</a></li>
+}
 }
 
 @main("نتیجه جستجوی بازیگران") {
@@ -29,18 +40,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @for(row <- data) {
+                        @for(number <- 1 to data.length) {
                         <tr style="font-weight:normal">
-                            <td>@row.id</td>
-                            <td style="text-align: right">@row.name</td>
-                            <td>@row.birthday</td>
+                            <td>@{toPersian((number + (page - 1) * 5).toString)}</td>
+                            <td style="text-align: right">@data(number - 1).name</td>
+                            <td>@{toPersian((data(number - 1).birthday).toString)}</td>
                             <td>
-                                <a href="/actors/edit/@row.id">
+                                <a href="/actors/edit/@data(number - 1).id">
                                     <button type="button" class="btn btn-primary btn-sm">
                                         ویرایش
                                     </button>
                                 </a>
-                                <a href="/actors/delete/@row.id">
+                                <a href="/actors/delete/@data(number - 1).id">
                                     <button type="button" class="btn btn-danger btn-sm">
                                         حذف
                                     </button>
@@ -55,82 +66,34 @@
                 <div class="row">
                     <nav class="d-flex justify-content-center" aria-label="Page navigation example">
                         <ul class="pagination d-flex flex-row-reverse">
-                            @item(page, end, "صفحه اول",
-                            1)
-                            @if(end > 2) {
-                                @item(page, end, if (end <= 5) {"2"} else {if(page <= 3) {"2"} else {"قبلی"}}, if (end <= 5) {2} else {if(page <= 3) {2} else {page - 1}})
-                                @if(end > 3) {
-                                    @item(page, end, if (end <= 5) {"3"} else {if(page <= 3) {"3"} else {if(page >= end - 2) {(end - 2).toString} else {page.toString}}}, if (end <= 5) {3} else {if(page <= 3) {3} else {if(page >= end - 2) {end - 2} else {page}}})
-                                    @if(end > 4) {
-                                        @item(page, end, if (end <= 5) {"4"} else {if(page >= end - 2) {(end - 1).toString} else {"بعدی"}}, if (end <= 5) {4} else {if(page >= end - 2) {end - 1} else {page + 1}})
-                                    }
-                                }
+                            @item(page, end, "1",
+                            1, page == 1)
+                            @if(page > 3) {
+                            <li class="page-item"><a class="page-link" href="#">...</a></li>
                             }
-                            @item(page, end, "صفحه آخر",
-                            end)
+                            @if(end > 2) {
+                            @item(page, end, if (end <= 5) {"2"} else {if(page <= 3) {"2"} else {"قبلی"}}, if (end <= 5)
+                            {2} else {if(page <= 3) {2} else {page - 1}}, page == 2)
+                            @if(end > 3) {
+                            @item(page, end, if (end <= 5) {"3"} else {if(page <= 3) {"3"} else {if(page >= end - 2)
+                            {(end - 2).toString} else {page.toString}}}, if (end <= 5) {3} else {if(page <= 3) {3} else
+                            {if(page >= end - 2) {end - 2} else {page}}}, page > 2 && page <= end - 2)
+                            @if(end > 4) {
+                            @item(page, end, if (end <= 5) {"4"} else {if(page >= end - 2) {(end - 1).toString} else
+                            {"بعدی"}}, if (end <= 5) {4} else {if(page >= end - 2) {end - 1} else {page + 1}}, page ==
+                            end - 1)
+                            }
+                            }
+                            }
+                            @if(page < end - 2) {
+                            <li class="page-item"><a class="page-link" href="#">...</a></li>
+                            }
+                            @item(page, end, end.toString,
+                            end, page == end)
                         </ul>
                     </nav>
                 </div>
                 }
-                <!--                @if(page != 0) {-->
-                <!--                <div class="row">-->
-                <!--                    <nav class="d-flex justify-content-center" aria-label="Page navigation example">-->
-                <!--                        <ul class="pagination d-flex flex-row-reverse">-->
-                <!--                            @if(end >= 2) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(1))">-->
-                <!--                                صفحه اول-->
-                <!--                            </a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 3) {-->
-                <!--                            <li class="page-item" dir="rtl"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">-->
-                <!--                                @{page - 1}-->
-                <!--                            </a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 4) {-->
-                <!--                            <li class="page-item" dir="rtl"><a class="page-link" href="@routes.ActorReportController.allActors(Some(3))">-->
-                <!--                                @{page - 1}-->
-                <!--                            </a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 2) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(end))">-->
-                <!--                                صفحه آخر-->
-                <!--                            </a></li>-->
-                <!--                            }-->
-                <!--                        </ul>-->
-                <!--                        <ul class="pagination d-flex flex-row-reverse">-->
-                <!--                            @if(end >= 2) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(1))">صفحه اول</a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 6) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">قبلی</a></li>-->
-                <!--                            <li class="page-item"><a class="page-link" href="#">...</a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 4) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">@{page - 1}</a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 3) {-->
-                <!--                            <li class="page-item" dir="rtl"><a class="page-link" href="@routes.ActorReportController.allActors(Some(if (page > 1) {page - 1} else {page}))">-->
-                <!--                                <span>@{page}</span>-->
-                <!--                                <span>-->
-                <!--                                    از-->
-                <!--                                </span>-->
-                <!--                                <span>@{end}</span>-->
-                <!--                            </a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 5) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page + 1))">@{page + 1}</a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 6) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="#">...</a></li>-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page + 1))">بعدی</a></li>-->
-                <!--                            }-->
-                <!--                            @if(end >= 2) {-->
-                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(end))">صفحه آخر</a></li>-->
-                <!--                            }-->
-                <!--                        </ul>-->
-                <!--                    </nav>-->
-                <!--                </div>-->
-                <!--                }-->
             </div>
         </div>
         <div class="col-3">

@@ -2,6 +2,12 @@
 
 @(data: Vector[Actor], page: Int, end: Int)
 
+@item(currentPage: Int, numberOfPages: Int, label: String, href: Int) = {
+<li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(href))">
+    @label
+</a></li>
+}
+
 @main("نتیجه جستجوی بازیگران") {
 <div class="container">
     <div class="row">
@@ -45,21 +51,86 @@
                         </tbody>
                     </table>
                 </div>
+                @if(end > 1) {
                 <div class="row">
                     <nav class="d-flex justify-content-center" aria-label="Page navigation example">
                         <ul class="pagination d-flex flex-row-reverse">
-                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(1))">صفحه اول</a></li>
-                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">قبلی</a></li>
-                            <li class="page-item"><a class="page-link" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">@{page - 1}</a></li>
-                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page))">@{page}</a></li>
-                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page + 1))">@{page + 1}</a></li>
-                            <li class="page-item"><a class="page-link" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page + 1))">بعدی</a></li>
-                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(end))">صفحه آخر</a></li>
+                            @item(page, end, "صفحه اول",
+                            1)
+                            @if(end > 2) {
+                                @item(page, end, if (end <= 5) {"2"} else {if(page <= 3) {"2"} else {"قبلی"}}, if (end <= 5) {2} else {if(page <= 3) {2} else {page - 1}})
+                                @if(end > 3) {
+                                    @item(page, end, if (end <= 5) {"3"} else {if(page <= 3) {"3"} else {if(page >= end - 2) {(end - 2).toString} else {page.toString}}}, if (end <= 5) {3} else {if(page <= 3) {3} else {if(page >= end - 2) {end - 2} else {page}}})
+                                    @if(end > 4) {
+                                        @item(page, end, if (end <= 5) {"4"} else {if(page >= end - 2) {(end - 1).toString} else {"بعدی"}}, if (end <= 5) {4} else {if(page >= end - 2) {end - 1} else {page + 1}})
+                                    }
+                                }
+                            }
+                            @item(page, end, "صفحه آخر",
+                            end)
                         </ul>
                     </nav>
                 </div>
+                }
+                <!--                @if(page != 0) {-->
+                <!--                <div class="row">-->
+                <!--                    <nav class="d-flex justify-content-center" aria-label="Page navigation example">-->
+                <!--                        <ul class="pagination d-flex flex-row-reverse">-->
+                <!--                            @if(end >= 2) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(1))">-->
+                <!--                                صفحه اول-->
+                <!--                            </a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 3) {-->
+                <!--                            <li class="page-item" dir="rtl"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">-->
+                <!--                                @{page - 1}-->
+                <!--                            </a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 4) {-->
+                <!--                            <li class="page-item" dir="rtl"><a class="page-link" href="@routes.ActorReportController.allActors(Some(3))">-->
+                <!--                                @{page - 1}-->
+                <!--                            </a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 2) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(end))">-->
+                <!--                                صفحه آخر-->
+                <!--                            </a></li>-->
+                <!--                            }-->
+                <!--                        </ul>-->
+                <!--                        <ul class="pagination d-flex flex-row-reverse">-->
+                <!--                            @if(end >= 2) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(1))">صفحه اول</a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 6) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">قبلی</a></li>-->
+                <!--                            <li class="page-item"><a class="page-link" href="#">...</a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 4) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page - 1))">@{page - 1}</a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 3) {-->
+                <!--                            <li class="page-item" dir="rtl"><a class="page-link" href="@routes.ActorReportController.allActors(Some(if (page > 1) {page - 1} else {page}))">-->
+                <!--                                <span>@{page}</span>-->
+                <!--                                <span>-->
+                <!--                                    از-->
+                <!--                                </span>-->
+                <!--                                <span>@{end}</span>-->
+                <!--                            </a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 5) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page + 1))">@{page + 1}</a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 6) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="#">...</a></li>-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(page + 1))">بعدی</a></li>-->
+                <!--                            }-->
+                <!--                            @if(end >= 2) {-->
+                <!--                            <li class="page-item"><a class="page-link" href="@routes.ActorReportController.allActors(Some(end))">صفحه آخر</a></li>-->
+                <!--                            }-->
+                <!--                        </ul>-->
+                <!--                    </nav>-->
+                <!--                </div>-->
+                <!--                }-->
             </div>
         </div>
         <div class="col-3">

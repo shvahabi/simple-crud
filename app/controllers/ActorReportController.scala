@@ -11,22 +11,47 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
   def allActors(page: Option[Int] = Some(1)): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] => {
     implicit val db = Database.forConfig("db")
     implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+    val pageLimit = 5
 
-    query[Actor](
-      s"""
-         |SELECT * FROM actors
-         |ORDER BY id
-         |LIMIT 5
-         |OFFSET ${(page.getOrElse(1) - 1) * 5};
-         |""".stripMargin
-    ) zip[Int] {
-      count(
-        s"""
-           |SELECT COUNT(*) FROM actors;
-           |""".stripMargin
-      )
-    } map {
-      result => Ok(views.html.someActors(result._1, page.getOrElse(1), result._2))
+    page match {
+      case Some(0) => {
+        {
+          query[Actor](
+            s"""
+               |SELECT * FROM actors
+               |ORDER BY name;
+               |""".stripMargin
+          )
+        } map {
+          unresolvedValue => {
+            val actors: Vector[Actor] = unresolvedValue
+            Ok(views.html.someActors(actors, 0, 0))
+          }
+        }
+      }
+      case _ => {
+        {
+          query[Actor](
+            s"""
+               |SELECT * FROM actors
+               |ORDER BY name
+               |LIMIT $pageLimit
+               |OFFSET ${(page.getOrElse(1) - 1) * pageLimit};
+               |""".stripMargin
+          )
+        } zip {
+          count(
+            s"""
+               |SELECT COUNT(*) FROM actors;
+               |""".stripMargin
+          )
+        } map {
+          unresolvedValue => {
+            val (actors: Vector[Actor], actorsCount: Int) = unresolvedValue
+            Ok(views.html.someActors(actors, page.getOrElse(1), Math.ceil(actorsCount / 5f).toInt))
+          }
+        }
+      }
     }
   }
   }

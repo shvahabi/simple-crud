@@ -1,17 +1,14 @@
 package controllers
 
 import javax.inject._
+import scala.concurrent.{ExecutionContext, Future}
 import play.api.mvc._
+import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import models.Actor
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
-@Singleton
-class ActorReportController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
-  implicit val db = Database.forConfig("db")
-
+class ActorReportController @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, controllerComponents: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(controllerComponents) with HasDatabaseConfigProvider[JdbcProfile] {
   def allActors(page: Option[Int] = Some(1)): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] => {
     val pageLimit: Int = 5
 

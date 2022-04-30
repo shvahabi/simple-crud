@@ -15,13 +15,13 @@ GET     /actors/edit/:actorId       controllers.ActorFormController.filledActorF
 POST    /actors/edit/:actorId       controllers.ActorFormController.editActor(actorId: String)
 GET     /actors/delete/:actorId     controllers.ActorReportController.deleteActor(actorId: String)
 
-GET     /movies                     controllers.ActorReportController.allMovies(page: Option[Int])
-GET     /movies/new                 controllers.ActorFormController.blankMovieForm()
-POST    /movies/new                 controllers.ActorFormController.newMovie()
-GET     /movies/:movieId            controllers.ActorReportController.singleMovie(actorId: String)
-GET     /movies/edit/:movieId       controllers.ActorFormController.filledMovieForm(actorId: String)
-POST    /movies/edit/:movieId       controllers.ActorFormController.editMovie(actorId: String)
-GET     /movies/delete/:movieId     controllers.ActorReportController.deleteMovie(actorId: String)
+GET     /movies                     controllers.MovieReportController.allMovies(page: Option[Int])
+#GET    /movies/new                 controllers.MovieFormController.blankMovieForm()
+#POST   /movies/new                 controllers.MovieFormController.newMovie()
+GET     /movies/:movieId            controllers.MovieReportController.singleMovie(movieId: String)
+#GET    /movies/edit/:movieId       controllers.MovieFormController.filledMovieForm(movieId: String)
+#POST   /movies/edit/:movieId       controllers.MovieFormController.editMovie(movieId: String)
+GET     /movies/delete/:movieId     controllers.MovieReportController.deleteMovie(movieId: String)
 
 GET     /*name                      controllers.IndexController.notFound(name)
 

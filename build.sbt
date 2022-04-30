@@ -1,7 +1,7 @@
-name := """simple-crud"""
+name := """simple-playframework-crud"""
 organization := "com.github.shvahabi"
 
-version := "1.0-SNAPSHOT"
+version := "0.1.0"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 

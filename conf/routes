@@ -6,6 +6,7 @@
 # An example controller showing a sample home page
 
 GET     /                           controllers.IndexController.landing()
+
 GET     /actors                     controllers.ActorReportController.allActors(page: Option[Int])
 GET     /actors/new                 controllers.ActorFormController.blankActorForm()
 POST    /actors/new                 controllers.ActorFormController.newActor()
@@ -13,6 +14,15 @@ GET     /actors/:actorId            controllers.ActorReportController.singleActo
 GET     /actors/edit/:actorId       controllers.ActorFormController.filledActorForm(actorId: String)
 POST    /actors/edit/:actorId       controllers.ActorFormController.editActor(actorId: String)
 GET     /actors/delete/:actorId     controllers.ActorReportController.deleteActor(actorId: String)
+
+GET     /movies                     controllers.ActorReportController.allMovies(page: Option[Int])
+GET     /movies/new                 controllers.ActorFormController.blankMovieForm()
+POST    /movies/new                 controllers.ActorFormController.newMovie()
+GET     /movies/:movieId            controllers.ActorReportController.singleMovie(actorId: String)
+GET     /movies/edit/:movieId       controllers.ActorFormController.filledMovieForm(actorId: String)
+POST    /movies/edit/:movieId       controllers.ActorFormController.editMovie(actorId: String)
+GET     /movies/delete/:movieId     controllers.ActorReportController.deleteMovie(actorId: String)
+
 GET     /*name                      controllers.IndexController.notFound(name)
 
 # Map static resources from the /public folder to the /assets URL path

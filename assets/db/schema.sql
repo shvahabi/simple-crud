@@ -9,6 +9,6 @@ CREATE TABLE actors (
     birthday integer NOT NULL);
 
 CREATE TABLE plays (
-    movie integer NOT NULL REFERENCES movies (id),
-    actor integer NOT NULL REFERENCES actors (id),
+    movie integer NOT NULL REFERENCES movies (id) ON DELETE CASCADE,
+    actor integer NOT NULL REFERENCES actors (id) ON DELETE CASCADE,
     role varchar(255));

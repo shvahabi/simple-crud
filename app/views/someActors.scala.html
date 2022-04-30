@@ -46,6 +46,11 @@
                             <td style="text-align: right">@data(number - 1).name</td>
                             <td>@{toPersian((data(number - 1).birthday).toString)}</td>
                             <td>
+                                <a href="/actors/@data(number - 1).id">
+                                    <button type="button" class="btn btn-success btn-sm">
+                                        بیشتر
+                                    </button>
+                                </a>
                                 <a href="/actors/edit/@data(number - 1).id">
                                     <button type="button" class="btn btn-primary btn-sm">
                                         ویرایش

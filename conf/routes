@@ -5,6 +5,7 @@
 
 # An example controller showing a sample home page
 
+GET     /                           controllers.IndexController.landing()
 GET     /actors                     controllers.ActorReportController.allActors(page: Option[Int])
 GET     /actors/new                 controllers.ActorFormController.blankActorForm()
 POST    /actors/new                 controllers.ActorFormController.newActor()

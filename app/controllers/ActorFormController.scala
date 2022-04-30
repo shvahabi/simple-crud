@@ -1,19 +1,18 @@
 package controllers
 
-import play.api.data._
-
 import javax.inject._
+import scala.concurrent.{ExecutionContext, Future}
 import play.api.mvc._
+import play.api.data._
 import play.api.data.Forms._
+import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
-import models.forms.{Actor => FormsActor}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import models.{Actor => ModelActor}
+import models.forms.{Actor => FormsActor}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
-class ActorFormController @Inject()(messagesAction: MessagesActionBuilder, val controllerComponents: ControllerComponents) extends BaseController {
-  implicit val db = Database.forConfig("db")
+class ActorFormController @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, messagesAction: MessagesActionBuilder, controllerComponents: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(controllerComponents) with HasDatabaseConfigProvider[JdbcProfile] {
   val form: Form[FormsActor] = Form(
     mapping(
       "name" -> text,

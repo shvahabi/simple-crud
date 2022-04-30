@@ -5,7 +5,7 @@
 
 @item(currentPage: Int, numberOfPages: Int, label: String, href: Int, current: Boolean) = {
 @if(current) {
-<li class="page-item active"><a class="page-link" href="@routes.ActorReportController.allActors(Some(href))">
+<li class="page-item active"><a class="page-link" href="#">
     @if(label == "قبلی" || label == "بعدی") {
     @label
     } else {@toPersian(label)}

@@ -6,6 +6,7 @@ import slick.jdbc.PostgresProfile.api._
 import models.Actor
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class ActorReportController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
@@ -28,7 +29,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
             val actors: Vector[Actor] = unresolvedValue
             Ok(views.html.someActors(actors, 0, 0))
           }
-        } recover[Result] {
+        } recoverWith[Result] {
           case t: Throwable => userPrompt(t)
         }
       }
@@ -55,7 +56,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
             val (actors: Vector[Actor], actorsCount: Int) = unresolvedValue
             Ok(views.html.someActors(actors, page.getOrElse(1), Math.ceil(actorsCount / pageLimit.toFloat).toInt))
           }
-        } recover[Result] {
+        } recoverWith[Result] {
           case t: Throwable => userPrompt(t)
         }
       }
@@ -76,7 +77,7 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
         val actor: Actor = unresolvedValue
         Ok(views.html.singleActor(actor))
       }
-    } recover[Result] {
+    } recoverWith[Result] {
       case t: Throwable => userPrompt(t)
     }
   }
@@ -92,13 +93,13 @@ class ActorReportController @Inject()(val controllerComponents: ControllerCompon
       }"
     } map {
       _ => Redirect(routes.ActorReportController.allActors(Some(1)))
-    } recover[Result] {
+    } recoverWith[Result] {
       case t: Throwable => userPrompt(t)
     }
   }
   }
 
-  def userPrompt(t: Throwable): Result = {
+  def userPrompt(t: Throwable): Future[Result] = Future {
     t.printStackTrace()
     new Status(503)(views.html.userPrompt("Service unavailable, please try again in a while ..."))
   }

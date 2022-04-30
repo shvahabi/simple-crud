@@ -6,126 +6,112 @@ import javax.inject._
 import play.api.mvc._
 import play.api.data.Forms._
 import slick.jdbc.PostgresProfile.api._
-import models.forms.Actor
+import models.forms.{Actor => FormsActor}
+import models.{Actor => ModelActor}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class ActorFormController @Inject()(messagesAction: MessagesActionBuilder, val controllerComponents: ControllerComponents) extends BaseController {
   implicit val db = Database.forConfig("db")
-
-  val form: Form[Actor] = Form(
+  val form: Form[FormsActor] = Form(
     mapping(
       "name" -> text,
       "birthday" -> number(min = 0)
-    )(Actor.apply)(Actor.unapply)
+    )(FormsActor.apply)(FormsActor.unapply)
   )
 
-  def blankActorForm(): Action[AnyContent] = messagesAction { implicit messagesRequest: MessagesRequest[AnyContent] => {
-    Ok(views.html.newActor(form))
+  def blankActorForm(): Action[AnyContent] = messagesAction.async { implicit messagesRequest: MessagesRequest[AnyContent] => {
+    Future {
+      Ok(views.html.newActor(form))
+    }
   }
   }
 
   def newActor(): Action[AnyContent] = messagesAction.async { implicit messagesRequest: MessagesRequest[AnyContent] => {
-    implicit val db = Database.forConfig("db")
-
-    val successFunction: Actor => Future[Result] = { data => {
-      val newActor = models.forms.Actor(data.name, data.birthday)
-      val queryString =
-        s"""
-           |INSERT INTO actors
-           |(name, birthday)
-           |VALUES
-           |('${newActor.name}', ${newActor.birthday});
-           |""".stripMargin
-
+    val successFunction: FormsActor => Future[Result] = { data => {
+      val newActor = FormsActor(data.name, data.birthday)
       db.run {
-        sqlu"#$queryString"
-      } andThen {
-        case _ => db.close()
+        sqlu"#${
+          s"""
+             |INSERT INTO actors
+             |(name, birthday)
+             |VALUES
+             |('${newActor.name}', ${newActor.birthday});
+             |""".stripMargin
+        }"
       } map {
         case _: Int => Redirect(routes.ActorReportController.allActors(Some(1))).flashing("info" -> "اطلاعات بازیگر جدید در سیستم ثبت گردید")
-      } recover {
-        t: Throwable => {
-          t.printStackTrace()
-          new Status(503)(views.html.userPrompt("Service unavailable, please try again in a while ..."))
-        }
+      } recoverWith[Result] {
+        case t: Throwable => userPrompt(t)
       }
     }
     }
-    val errorFunction: Form[Actor] => Future[Result] = { formWithErrors => {
+    val errorFunction: Form[FormsActor] => Future[Result] = { formWithErrors => {
       Future {
         BadRequest(views.html.newActor(formWithErrors))
       }
     }
     }
 
-    val actorData: Form[Actor] = form.bindFromRequest()
+    val actorData: Form[FormsActor] = form.bindFromRequest()
     actorData.fold(errorFunction, successFunction)
-
   }
   }
 
   def filledActorForm(actorId: String): Action[AnyContent] = messagesAction.async { implicit messagesRequest: MessagesRequest[AnyContent] => {
-    query[models.Actor](
-      s"""
-         |SELECT * FROM actors
-         |WHERE id = ${actorId};
-         |""".stripMargin
-    ) map {
+    db.run {
+      sql"#${
+        s"""
+           |SELECT * FROM actors
+           |WHERE id = ${actorId};
+           |""".stripMargin
+      }".as[ModelActor]
+    } map {
       resolvedValue => Map("name" -> resolvedValue.head.name, "birthday" -> resolvedValue.head.birthday.toString)
     } map {
       resolvedValue => form.bind(resolvedValue)
     } map {
-      case value: Form[Actor] => Ok(views.html.editActor(value, actorId))
-    } recover {
-      case t: Throwable => {
-        t.printStackTrace()
-        new Status(503)(views.html.userPrompt("Service unavailable, please try again in a while ..."))
-      }
+      case value: Form[models.forms.Actor] => Ok(views.html.editActor(value, actorId))
+    } recoverWith[Result] {
+      case t: Throwable => userPrompt(t)
     }
   }
   }
 
   def editActor(actorId: String): Action[AnyContent] = messagesAction.async { implicit messagesRequest: MessagesRequest[AnyContent] => {
-
-    val successFunction: Actor => Future[Result] = { data => {
-      val modifiedActor = models.forms.Actor(data.name, data.birthday)
-      implicit val db = Database.forConfig("db")
-
-      val queryString =
-        s"""
-           |UPDATE actors
-           |SET name = '${modifiedActor.name}', birthday = ${modifiedActor.birthday}
-           |WHERE id = $actorId;
-           |""".stripMargin
-
+    val successFunction: FormsActor => Future[Result] = { data => {
+      val modifiedActor = FormsActor(data.name, data.birthday)
       db.run {
-        sqlu"#${queryString}"
-      } andThen {
-        case _ => db.close()
+        sqlu"#${
+          s"""
+             |UPDATE actors
+             |SET name = '${modifiedActor.name}', birthday = ${modifiedActor.birthday}
+             |WHERE id = $actorId;
+             |""".stripMargin
+        }"
       } map {
         case _: Int => Redirect(routes.ActorReportController.allActors(Some(1))).flashing("info" -> "تغییرات اطلاعات بازیگر ثبت گردید")
-      } recover {
-        case t: Throwable => {
-          t.printStackTrace()
-          new Status(503)(views.html.userPrompt("Service unavailable, please try again in a while ..."))
-        }
+      } recoverWith[Result] {
+        case t: Throwable => userPrompt(t)
       }
     }
     }
-    val errorFunction: Form[Actor] => Future[Result] = { formWithErrors => {
+    val errorFunction: Form[FormsActor] => Future[Result] = { formWithErrors => {
       Future {
         BadRequest(views.html.editActor(formWithErrors, actorId))
       }
     }
     }
 
-    val actorData: Form[Actor] = form.bindFromRequest()
+    val actorData: Form[FormsActor] = form.bindFromRequest()
     actorData.fold[Future[Result]](errorFunction, successFunction)
-
   }
+  }
+
+  def userPrompt(t: Throwable): Future[Result] = Future {
+    t.printStackTrace()
+    new Status(503)(views.html.userPrompt("Service unavailable, please try again in a while ..."))
   }
 
 }

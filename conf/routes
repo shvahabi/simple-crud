@@ -16,7 +16,7 @@ POST    /actors/edit/:actorId       controllers.ActorFormController.editActor(ac
 GET     /actors/delete/:actorId     controllers.ActorReportController.deleteActor(actorId: String)
 
 GET     /movies                     controllers.MovieReportController.allMovies(page: Option[Int])
-#GET    /movies/new                 controllers.MovieFormController.blankMovieForm()
+GET    /movies/new                 controllers.MovieFormController.blankMovieForm()
 #POST   /movies/new                 controllers.MovieFormController.newMovie()
 GET     /movies/:movieId            controllers.MovieReportController.singleMovie(movieId: String)
 #GET    /movies/edit/:movieId       controllers.MovieFormController.filledMovieForm(movieId: String)

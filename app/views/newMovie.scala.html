@@ -1,0 +1,11 @@
+@(movieForm: Form[models.forms.Movie])(implicit request: MessagesRequestHeader)
+
+@main("افزودن فیلم جدید") {
+
+<div rtl="rtl">
+    <h3>فرم ورود اطلاعات فیلم جدید</h3>
+    @helper.form(action = routes.MovieFormController.newMovie) {
+    @helper.inputText(movieForm)
+    }
+</div>
+}

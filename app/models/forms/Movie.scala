@@ -1,0 +1,1 @@
+case class Movie(title: String, year: Int)

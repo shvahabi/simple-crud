@@ -28,7 +28,7 @@ class ActorReportController @Inject()(protected val dbConfigProvider: DatabaseCo
       }
       case _ => {
         db.run {
-          actors.sortBy(_.name.asc).drop((page.getOrElse(1) - 1) * pageLimit).take(pageLimit).result zip actors.distinct.length.result
+          actors.sortBy(_.name.asc).drop((page.getOrElse(1) - 1) * pageLimit).take(pageLimit).result zip actors.length.result
         } map {
           unresolvedValue => {
             val actorsRecords: Vector[Actor] = unresolvedValue._1.toVector

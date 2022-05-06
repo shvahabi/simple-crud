@@ -74,7 +74,7 @@
                             <li class="page-item"><a class="page-link" href="/actors?page=0">فهرست کامل</a></li>
                             @item(page, end, "1",
                             1, page == 1)
-                            @if(page > 3) {
+                            @if(page > 3 && end > 5) {
                             <li class="page-item"><a class="page-link" href="#">...</a></li>
                             }
                             @if(end > 2) {
@@ -91,7 +91,7 @@
                             }
                             }
                             }
-                            @if(page < end - 2) {
+                            @if(page < end - 2 && end > 5) {
                             <li class="page-item"><a class="page-link" href="#">...</a></li>
                             }
                             @item(page, end, end.toString,

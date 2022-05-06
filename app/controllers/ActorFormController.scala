@@ -8,9 +8,8 @@ import play.api.data.Forms._
 import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import models.{Actor => ModelActor}
+import models.Actors
 import models.forms.{Actor => FormsActor}
-
 
 class ActorFormController @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, messagesAction: MessagesActionBuilder, controllerComponents: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(controllerComponents) with HasDatabaseConfigProvider[JdbcProfile] {
   val form: Form[FormsActor] = Form(
@@ -19,6 +18,7 @@ class ActorFormController @Inject()(protected val dbConfigProvider: DatabaseConf
       "birthday" -> number(min = 0)
     )(FormsActor.apply)(FormsActor.unapply)
   )
+  val actors = TableQuery[Actors]
 
   def blankActorForm(): Action[AnyContent] = messagesAction.async { implicit messagesRequest: MessagesRequest[AnyContent] => {
     Future {
@@ -31,14 +31,7 @@ class ActorFormController @Inject()(protected val dbConfigProvider: DatabaseConf
     val successFunction: FormsActor => Future[Result] = { data => {
       val newActor = FormsActor(data.name, data.birthday)
       db.run {
-        sqlu"#${
-          s"""
-             |INSERT INTO actors
-             |(name, birthday)
-             |VALUES
-             |('${newActor.name}', ${newActor.birthday});
-             |""".stripMargin
-        }"
+        actors.map(a => (a.name, a.birthday)) += (newActor.name, newActor.birthday)
       } map {
         case _: Int => Redirect(routes.ActorReportController.allActors(Some(1))).flashing("info" -> "اطلاعات بازیگر جدید در سیستم ثبت گردید")
       } recoverWith[Result] {
@@ -60,14 +53,9 @@ class ActorFormController @Inject()(protected val dbConfigProvider: DatabaseConf
 
   def filledActorForm(actorId: String): Action[AnyContent] = messagesAction.async { implicit messagesRequest: MessagesRequest[AnyContent] => {
     db.run {
-      sql"#${
-        s"""
-           |SELECT * FROM actors
-           |WHERE id = ${actorId};
-           |""".stripMargin
-      }".as[ModelActor]
+      actors.filter(_.id === actorId.asColumnOf[Int]).result.head
     } map {
-      resolvedValue => Map("name" -> resolvedValue.head.name, "birthday" -> resolvedValue.head.birthday.toString)
+      resolvedValue => Map("name" -> resolvedValue.name, "birthday" -> resolvedValue.birthday.toString)
     } map {
       resolvedValue => form.bind(resolvedValue)
     } map {
@@ -82,13 +70,7 @@ class ActorFormController @Inject()(protected val dbConfigProvider: DatabaseConf
     val successFunction: FormsActor => Future[Result] = { data => {
       val modifiedActor = FormsActor(data.name, data.birthday)
       db.run {
-        sqlu"#${
-          s"""
-             |UPDATE actors
-             |SET name = '${modifiedActor.name}', birthday = ${modifiedActor.birthday}
-             |WHERE id = $actorId;
-             |""".stripMargin
-        }"
+        actors.filter(_.id === actorId.asColumnOf[Int]).map(a => (a.name, a.birthday)).update((modifiedActor.name, modifiedActor.birthday))
       } map {
         case _: Int => Redirect(routes.ActorReportController.allActors(Some(1))).flashing("info" -> "تغییرات اطلاعات بازیگر ثبت گردید")
       } recoverWith[Result] {

@@ -1,0 +1,24 @@
+@(movieForm: Form[models.forms.Movie])(implicit request: MessagesRequestHeader)
+
+@main("افزودن فیلم جدید") {
+@request.flash.data.map{ case (name, value) =>
+<div>@name: @value</div>
+}
+
+@if(movieForm.hasGlobalErrors) {
+@movieForm.globalErrors.map { error: FormError =>
+<div>
+    Error: @error.key: @error.message
+</div>
+}
+}
+<div dir="rtl">
+    <h3>فرم ورود اطلاعات فیلم جدید</h3>
+    @helper.form(routes.MovieFormController.newMovie) {
+    @helper.CSRF.formField
+    @helper.inputText(movieForm("title"), Symbol("_label") -> "عنوان")
+    @helper.inputText(movieForm("year"), Symbol("_label") -> "سال ساخت")
+    <button class="btn btn-success btn-sm">افزودن</button>
+    }
+</div>
+}

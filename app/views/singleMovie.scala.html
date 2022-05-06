@@ -1,0 +1,43 @@
+@import models.Movie
+@import utilities.toPersian
+
+@(movie: Movie)
+
+@main("اطلاعات فیلم") {
+<div class="container" dir="rtl">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="card text-center" style="width: 18rem;">
+                <img class="card-img-top" alt="@movie.title">
+                <div class="card-body">
+                    <h5 class="card-title" align="center">@movie.title</h5>
+                    <p class="card-text">
+                        فیلم
+                        @movie.title
+                        ساخت ایران و تولید سال
+                        @toPersian(movie.year.toString)
+                        می‌باشد.
+                    </p>
+                    <a href="/movies">
+                        <button type="button" class="btn btn-success btn-sm">
+                            فهرست
+                        </button>
+                    </a>
+                    <a href="/movies/edit/@movie.id">
+                        <button type="button" class="btn btn-primary btn-sm">
+                            ویرایش
+                        </button>
+                    </a>
+                    <a href="/movies/delete/@movie.id">
+                        <button type="button" class="btn btn-danger btn-sm">
+                            حذف
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+}
